@@ -154,4 +154,54 @@ open class Deserializer {
             return false
         }
     }
+    
+    /// Get the next available Bool.
+    /// - Returns: Returns the next available Bool or `false` if not available.
+    public func double() -> Double {
+        let text = string()
+        
+        if let value = Double(text) {
+            return value
+        } else {
+            return 0
+        }
+    }
+    
+    /// Get the Bool at the given index.
+    /// - Parameter index: The index to get the Bool from.
+    /// - Returns: Returns the next requested Bool or `false` if not available.
+    public func double(at index:Int) -> Double {
+        let text = string(at: index)
+        
+        if let value = Double(text) {
+            return value
+        } else {
+            return 0
+        }
+    }
+    
+    /// Get the next available Bool.
+    /// - Returns: Returns the next available Bool or `false` if not available.
+    public func float() -> Float {
+        let text = string()
+        
+        if let value = Float(text) {
+            return value
+        } else {
+            return 0
+        }
+    }
+    
+    /// Get the Bool at the given index.
+    /// - Parameter index: The index to get the Bool from.
+    /// - Returns: Returns the next requested Bool or `false` if not available.
+    public func float(at index:Int) -> Float {
+        let text = string(at: index)
+        
+        if let value = Float(text) {
+            return value
+        } else {
+            return 0
+        }
+    }
 }

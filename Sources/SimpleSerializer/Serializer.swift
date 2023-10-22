@@ -81,7 +81,7 @@ open class Serializer {
         return self
     }
     
-    /// Appends the given string value to the serialized list.
+    /// Appends the given int value to the serialized list.
     /// - Parameter item: The item to append.
     /// - Returns: Returns self.
     @discardableResult public func append(_ item:Int) -> Serializer {
@@ -96,10 +96,40 @@ open class Serializer {
         return self
     }
     
-    /// Appends the given string value to the serialized list.
+    /// Appends the given bool value to the serialized list.
     /// - Parameter item: The item to append.
     /// - Returns: Returns self.
     @discardableResult public func append(_ item:Bool) -> Serializer {
+        let text = "\(item)"
+        
+        if value == "" {
+            value = text
+        } else {
+            value += "\(divider)\(text)"
+        }
+        
+        return self
+    }
+    
+    /// Appends the given double value to the serialized list.
+    /// - Parameter item: The item to append.
+    /// - Returns: Returns self.
+    @discardableResult public func append(_ item:Double) -> Serializer {
+        let text = "\(item)"
+        
+        if value == "" {
+            value = text
+        } else {
+            value += "\(divider)\(text)"
+        }
+        
+        return self
+    }
+    
+    /// Appends the given float value to the serialized list.
+    /// - Parameter item: The item to append.
+    /// - Returns: Returns self.
+    @discardableResult public func append(_ item:Float) -> Serializer {
         let text = "\(item)"
         
         if value == "" {
