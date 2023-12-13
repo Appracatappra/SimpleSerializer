@@ -72,7 +72,7 @@ The following code shows an example of **Serializing** and **Deserializing** a s
 }
 ```
 
-**NOTE:** Remember to keep the same order when **Serializing** and **Deserializing** a given property, as they are dependent on the specific order.
+> Remember to keep the same order when **Serializing** and **Deserializing** a given property, as they are dependent on the specific order.
 
 ### Complex Use Case
 
@@ -88,7 +88,7 @@ The following code shows an example of **Serializing** and **Deserializing** a c
     /// A tile that the current player is starting to build a new word with.
     var inPlayTile:GameTile? = nil
     
-    /// An avaliable bonus at this grid location.
+    /// An available bonus at this grid location.
     var bonus:BonusSpot? = nil
     
     // MARK: - Computed Properties
@@ -174,4 +174,4 @@ The following code shows an example of **Serializing** and **Deserializing** a c
 }
 ```
 
-**NOTE:** Any `nil` properties will be encoded to the string property `"(e)"`.
+> Any `nil` properties will be encoded to the string property `"(e)"`.

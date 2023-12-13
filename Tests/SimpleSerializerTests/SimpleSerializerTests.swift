@@ -2,11 +2,10 @@ import XCTest
 @testable import SimpleSerializer
 
 final class SimpleSerializerTests: XCTestCase {
-    func testExample() throws {
-        // XCTest Documentation
-        // https://developer.apple.com/documentation/xctest
-
-        // Defining Test Cases and Test Methods
-        // https://developer.apple.com/documentation/xctest/defining_test_cases_and_test_methods
+    func testSerializer() throws {
+        let serializer = SimpleSerializer.Serializer(divider: ",")
+            .append("one")
+            .append("two")
+        XCTAssert(serializer.value == "one,two")
     }
 }
