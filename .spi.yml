@@ -1,0 +1,12 @@
+version: 1
+builder:
+  configs:
+  - platform: ios
+    scheme: SimpleSerializer
+  - platform: macos-xcodebuild
+    scheme: SimpleSerializer
+  - platform: tvos
+    scheme: SimpleSerializer
+  - platform: watchos
+    scheme: SimpleSerializer
+  - documentation_targets: [SimpleSerializer]
