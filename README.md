@@ -4,6 +4,14 @@
 
 A simple utility for **Serializing** a Swift object in the smallest space possible by converting it to a **Divider** separated `String`.
 
+## Support
+
+If you find `SimpleSerialize` useful and would like to help support its continued development and maintenance, please consider making a small donation, especially if you are using it in a commercial product:
+
+<a href="https://www.buymeacoffee.com/KevinAtAppra" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+It's through the support of contributors like yourself, I can continue to build, release and maintain high-quality, well documented Swift Packages like `SimpleSerialize` for free.
+
 ## Installation
 
 **Swift Package Manager** (Xcode 11 and above)
