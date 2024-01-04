@@ -8,4 +8,30 @@ final class SimpleSerializerTests: XCTestCase {
             .append("two")
         XCTAssert(serializer.value == "one,two")
     }
+    
+    func testGenerics() throws {
+        let serializer = SimpleSerializer.Serializer(divider: ",")
+            .append(1)
+            .append(2)
+        
+        let deserializer = SimpleSerializer.Deserializer(text: serializer.value, divider: ",")
+        let x:Int = deserializer.value() ?? 0
+        let y:Int = deserializer.value() ?? 0
+        
+        XCTAssert(x == 1 && y == 2)
+    }
+    
+    func testArray() throws {
+        let names:[String] = ["one", "two", "three"]
+        let numbers:[Int] = [1, 2, 3]
+        let serializer = SimpleSerializer.Serializer(divider: ",")
+            .append(array: names, divider: ":")
+            .append(array: numbers, divider: ";")
+        let value = serializer.value
+        
+        let deserializer = SimpleSerializer.Deserializer(text: value, divider: ",")
+        let words:[String] = deserializer.array(divider: ":")
+        
+        XCTAssert(words[1] == "two")
+    }
 }

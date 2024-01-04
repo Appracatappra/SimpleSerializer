@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import LogManager
 import SwiftletUtilities
 
 /// A simple utility for **Serializing** a Swift object in the smallest space possible by converting it to a **Divider** separated `String`.
@@ -163,6 +164,21 @@ open class Serializer {
         return self
     }
     
+    /// Appends the given Color value to the serialized list.
+    /// - Parameter item: The item to append.
+    /// - Returns: Returns self.
+    @discardableResult public func append(_ item:Color) -> Serializer {
+        let text = "\(item.toHex(withPrefix: true, includeAlpha: true))"
+        
+        if value == "" {
+            value = text
+        } else {
+            value += "\(divider)\(text)"
+        }
+        
+        return self
+    }
+    
     /// Appends an object that conforms to `SimpleSerializeable` to the serialized list.
     /// - Parameter child: The child object to serialize.
     /// - Returns: Returns self.
@@ -200,7 +216,7 @@ open class Serializer {
         if value == "" {
             value = text
         } else {
-            value += "\(divider)\(text)"
+            value += "\(self.divider)\(text)"
         }
         
         return self
@@ -213,5 +229,63 @@ open class Serializer {
     /// - Returns: Returns self.
     @discardableResult public func append<T:SimpleSerializeable, X>(children:[T], divider: StringRepresentable<X>) -> Serializer {
         return append(children: children, divider: divider.rawValue)
+    }
+    
+    /// Appends a generic type to the serialized list.
+    /// - Parameter item: The item to append.
+    /// - Returns: Returns self.
+    @discardableResult public func append<T>(_ item:T) -> Serializer {
+        
+        if let value = item as? String {
+            self.append(value)
+        } else if let value = item as? Int {
+            self.append(value)
+        } else if let value = item as? Bool {
+            self.append(value)
+        } else if let value = item as? Double {
+            self.append(value)
+        } else if let value = item as? Float {
+            self.append(value)
+        } else if let value = item as? CGFloat {
+            self.append(value)
+        } else if let value = item as? Color {
+            self.append(value)
+        } else {
+            Debug.error(subsystem: "SimpleSerializer", category: "Append", "Unknown Type Found")
+        }
+        
+        return self
+    }
+    
+    /// Appends an array of generic types to the serialized list.
+    /// - Parameters:
+    ///   - array: The array of items to append.
+    ///   - divider: The divider character for the items in the array.
+    /// - Returns: Returns self.
+    @discardableResult public func append<T>(array:[T], divider:String) -> Serializer {
+        let serializer = Serializer(divider: divider)
+        
+        for item in array {
+            serializer.append(item)
+        }
+        
+        let text = serializer.value
+        
+        if value == "" {
+            value = text
+        } else {
+            value += "\(self.divider)\(text)"
+        }
+        
+        return self
+    }
+    
+    /// Appends an array of generic types to the serialized list.
+    /// - Parameters:
+    ///   - array: The array of items to append.
+    ///   - divider: The divider character for the items in the array.
+    /// - Returns: Returns self.
+    @discardableResult public func append<T, X>(array:[T], divider:StringRepresentable<X>) -> Serializer {
+        return append(array: array, divider: divider.rawValue)
     }
 }

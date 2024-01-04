@@ -232,6 +232,78 @@ open class Deserializer {
         return CGFloat(float(at: index))
     }
     
+    /// Get the next available Color.
+    /// - Returns: Returns the next available Color or `white` if not available.
+    public func color() -> Color {
+        let text = string()
+        
+        if let value = Color(fromHex: text) {
+            return value
+        } else {
+            return .white
+        }
+    }
+    
+    /// Get the Color at the given index.
+    /// - Parameter index: The index to get the Color from.
+    /// - Returns: Returns the next requested Color or `white` if not available.
+    public func color(at index:Int) -> Color {
+        let text = string(at: index)
+        
+        if let value = Color(fromHex: text) {
+            return value
+        } else {
+            return .white
+        }
+    }
+    
+    /// Get the next available generic item.
+    /// - Returns: The next generic item or `nil` if not available.
+    public func value<T>() -> T? {
+        
+        if T.self is String.Type {
+            return self.string() as? T
+        } else if T.self is Int.Type {
+            return self.int() as? T
+        } else if T.self is Bool.Type {
+            return self.bool() as? T
+        } else if T.self is Double.Type {
+            return self.double() as? T
+        } else if T.self is Float.Type {
+            return self.float() as? T
+        } else if T.self is CGFloat.Type {
+            return self.cgFloat() as? T
+        } else if T.self is Color.Type {
+            return self.color() as? T
+        }
+        
+        return nil
+    }
+    
+    /// Get the generic item at the given index.
+    /// - Parameter index: The index to get the generic item from.
+    /// - Returns: descriptionThe requested generic item or `nil` if not available.
+    public func value<T>(at index:Int) -> T? {
+        
+        if T.self is String.Type {
+            return self.string(at: index) as? T
+        } else if T.self is Int.Type {
+            return self.int(at: index) as? T
+        } else if T.self is Bool.Type {
+            return self.bool(at: index) as? T
+        } else if T.self is Double.Type {
+            return self.double(at: index) as? T
+        } else if T.self is Float.Type {
+            return self.float(at: index) as? T
+        } else if T.self is CGFloat.Type {
+            return self.cgFloat(at: index) as? T
+        } else if T.self is Color.Type {
+            return self.color(at: index) as? T
+        }
+        
+        return nil
+    }
+    
     /// Gets the next avaiable child object conforming to `SimpleSerializeable`.
     /// - Returns: Returns the next child.
     public func child<T:SimpleSerializeable>() -> T {
@@ -261,6 +333,114 @@ open class Deserializer {
         }
         
         return children
+    }
+    
+    /// Decode an array of generic items.
+    /// - Parameter divider: The divider for the array items.
+    /// - Returns: The array of generic items.
+    public func array<T>(divider:String) -> [T] {
+        let text = string()
+        let deserializer = Deserializer(text: text, divider: divider)
+        var children:[T] = []
+        
+        // Decode all children
+        for _ in 0..<deserializer.items {
+            
+            if T.self is String.Type {
+                if let value = deserializer.string() as? T {
+                    children.append(value)
+                }
+            } else if T.self is Int.Type {
+                if let value = deserializer.int() as? T {
+                    children.append(value)
+                }
+            } else if T.self is Bool.Type {
+                if let value = deserializer.bool() as? T {
+                    children.append(value)
+                }
+            } else if T.self is Double.Type {
+                if let value = deserializer.double() as? T {
+                    children.append(value)
+                }
+            } else if T.self is Float.Type {
+                if let value = deserializer.float() as? T {
+                    children.append(value)
+                }
+            } else if T.self is CGFloat.Type {
+                if let value = deserializer.cgFloat() as? T {
+                    children.append(value)
+                }
+            } else if T.self is Color.Type {
+                if let value = deserializer.color() as? T {
+                    children.append(value)
+                }
+            }
+        }
+        
+        return children
+    }
+    
+    /// Decode an array of generic items.
+    /// - Parameter divider: The divider for the array items.
+    /// - Returns: The array of generic items.
+    public func array<T, X>(divider:StringRepresentable<X>) -> [T] {
+        return array(divider: divider.rawValue)
+    }
+    
+    /// Decode an array of generic items.
+    /// - Parameters:
+    ///   - index: The index to read the array from
+    ///   - divider: The divider for the array items.
+    /// - Returns: The array of generic items.
+    public func array<T>(at index:Int, divider:String) -> [T] {
+        let text = string(at: index)
+        let deserializer = Deserializer(text: text, divider: divider)
+        var children:[T] = []
+        
+        // Decode all children
+        for _ in 0..<deserializer.items {
+            
+            if T.self is String.Type {
+                if let value = deserializer.string() as? T {
+                    children.append(value)
+                }
+            } else if T.self is Int.Type {
+                if let value = deserializer.int() as? T {
+                    children.append(value)
+                }
+            } else if T.self is Bool.Type {
+                if let value = deserializer.bool() as? T {
+                    children.append(value)
+                }
+            } else if T.self is Double.Type {
+                if let value = deserializer.double() as? T {
+                    children.append(value)
+                }
+            } else if T.self is Float.Type {
+                if let value = deserializer.float() as? T {
+                    children.append(value)
+                }
+            } else if T.self is CGFloat.Type {
+                if let value = deserializer.cgFloat() as? T {
+                    children.append(value)
+                }
+            } else if T.self is Color.Type {
+                if let value = deserializer.color() as? T {
+                    children.append(value)
+                }
+            }
+        }
+        
+        return children
+    }
+    
+    /// Decode an array of generic items.
+    /// - Parameters:
+    ///   - index: The index to read the array from
+    ///   - divider: The divider for the array items.
+    /// - Returns: The array of generic items.
+    public func array<T, X>(at index:Int, divider:StringRepresentable<X>) -> [T] {
+        return array(at: index, divider: divider.rawValue)
     }
     
     /// Gets the next avaiable array of child objects conforming to `SimpleSerializeable`.
