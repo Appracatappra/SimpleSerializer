@@ -73,13 +73,18 @@ open class Deserializer {
     
     /// Gets the next available string.
     /// - Returns: Returns the next available string or "" if not available.
-    public func string() -> String {
+    /// - Parameter isBase64Encoded: if `true` decode the string from Base 64.
+    public func string(isBase64Encoded:Bool = false) -> String {
         guard index < parts.count else {
             return ""
         }
         
-        let text = String(parts[index])
+        var text = String(parts[index])
         moveNext()
+        
+        if isBase64Encoded {
+            text = text.base64Decoded()
+        }
         
         if text == "<e>" {
             return ""
@@ -90,13 +95,18 @@ open class Deserializer {
     
     /// Gets the string at the given index.
     /// - Parameter index: The index to get the string at.
+    /// - Parameter isBase64Encoded: if `true` decode the string from Base 64.
     /// - Returns: Returns the next requested string or "" if not available.
-    public func string(at index:Int) -> String {
+    public func string(at index:Int, isBase64Encoded:Bool = false) -> String {
         guard index >= 0 && index < parts.count else {
             return ""
         }
         
-        let text = String(parts[index])
+        var text = String(parts[index])
+        
+        if isBase64Encoded {
+            text = text.base64Decoded()
+        }
         
         if text == "<e>" {
             return ""
@@ -155,8 +165,8 @@ open class Deserializer {
         }
     }
     
-    /// Get the next available Bool.
-    /// - Returns: Returns the next available Bool or `false` if not available.
+    /// Get the next available Double.
+    /// - Returns: Returns the next available Double or `0` if not available.
     public func double() -> Double {
         let text = string()
         
@@ -167,9 +177,9 @@ open class Deserializer {
         }
     }
     
-    /// Get the Bool at the given index.
-    /// - Parameter index: The index to get the Bool from.
-    /// - Returns: Returns the next requested Bool or `false` if not available.
+    /// Get the Double at the given index.
+    /// - Parameter index: The index to get the Double from.
+    /// - Returns: Returns the next requested Double or `0` if not available.
     public func double(at index:Int) -> Double {
         let text = string(at: index)
         
@@ -180,8 +190,8 @@ open class Deserializer {
         }
     }
     
-    /// Get the next available Bool.
-    /// - Returns: Returns the next available Bool or `false` if not available.
+    /// Get the next available Float.
+    /// - Returns: Returns the next available Bool or `0` if not available.
     public func float() -> Float {
         let text = string()
         
@@ -192,9 +202,9 @@ open class Deserializer {
         }
     }
     
-    /// Get the Bool at the given index.
-    /// - Parameter index: The index to get the Bool from.
-    /// - Returns: Returns the next requested Bool or `false` if not available.
+    /// Get the Float at the given index.
+    /// - Parameter index: The index to get the Float from.
+    /// - Returns: Returns the next requested Float or `0` if not available.
     public func float(at index:Int) -> Float {
         let text = string(at: index)
         
@@ -203,5 +213,70 @@ open class Deserializer {
         } else {
             return 0
         }
+    }
+    
+    /// Gets the next avaiable child object conforming to `SimpleSerializeable`.
+    /// - Returns: Returns the next child.
+    public func child<T:SimpleSerializeable>() -> T {
+        let text = string()
+        return T(from: text)
+    }
+    
+    /// Gets the requested child object conforming to `SimpleSerializeable`.
+    /// - Parameter index: The index to get the child from.
+    /// - Returns: Returns the requested child.
+    public func child<T:SimpleSerializeable>(at index:Int) -> T {
+        let text = string(at: index)
+        return T(from: text)
+    }
+    
+    /// Gets the next avaiable array of child objects conforming to `SimpleSerializeable`.
+    /// - Parameter divider: The divider used to separate items in the array.
+    /// - Returns: Returns next avaiable array of child objects.
+    public func children<T:SimpleSerializeable>(divider:String) -> [T] {
+        let text = string()
+        let deserializer = Deserializer(text: text, divider: divider)
+        var children:[T] = []
+        
+        // Decode all children
+        for _ in 0..<deserializer.items {
+            children.append(deserializer.child())
+        }
+        
+        return children
+    }
+    
+    /// Gets the next avaiable array of child objects conforming to `SimpleSerializeable`.
+    /// - Parameter divider: The divider used to separate items in the array.
+    /// - Returns: Returns next avaiable array of child objects.
+    public func children<T:SimpleSerializeable, X>(divider:StringRepresentable<X>) -> [T] {
+        return children(divider: divider.rawValue)
+    }
+    
+    /// Gets the requested array of child objects conforming to `SimpleSerializeable`.
+    /// - Parameters:
+    ///   - index: The index to get the child from.
+    ///   - divider: The divider used to separate items in the array.
+    /// - Returns: Returns requested array of child objects.
+    public func children<T:SimpleSerializeable>(at index:Int, divider:String) -> [T] {
+        let text = string(at: index)
+        let deserializer = Deserializer(text: text, divider: divider)
+        var children:[T] = []
+        
+        // Decode all children
+        for _ in 0..<deserializer.items {
+            children.append(deserializer.child<T>())
+        }
+        
+        return children
+    }
+    
+    /// Gets the requested array of child objects conforming to `SimpleSerializeable`.
+    /// - Parameters:
+    ///   - index: The index to get the child from.
+    ///   - divider: The divider used to separate items in the array.
+    /// - Returns: Returns requested array of child objects.
+    public func children<T:SimpleSerializeable, X>(at index:Int, divider:StringRepresentable<X>) -> [T] {
+        return children(at: index, divider: divider.rawValue)
     }
 }
