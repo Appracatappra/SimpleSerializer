@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 import SwiftletUtilities
 
 /// A simple utility for **Serializing** a Swift object in the smallest space possible by converting it to a **Divider** separated `String`.
@@ -136,6 +137,21 @@ open class Serializer {
     /// - Parameter item: The item to append.
     /// - Returns: Returns self.
     @discardableResult public func append(_ item:Float) -> Serializer {
+        let text = "\(item)"
+        
+        if value == "" {
+            value = text
+        } else {
+            value += "\(divider)\(text)"
+        }
+        
+        return self
+    }
+    
+    /// Appends the given CGFloat value to the serialized list.
+    /// - Parameter item: The item to append.
+    /// - Returns: Returns self.
+    @discardableResult public func append(_ item:CGFloat) -> Serializer {
         let text = "\(item)"
         
         if value == "" {

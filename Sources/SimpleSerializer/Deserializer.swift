@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import SwiftUI
+import SwiftletUtilities
 
 /// A simple utility for **Deserializering** a Swift object in the smallest space possible by converting it from a **Divider** separated `String`.
 open class Deserializer {
@@ -191,7 +193,7 @@ open class Deserializer {
     }
     
     /// Get the next available Float.
-    /// - Returns: Returns the next available Bool or `0` if not available.
+    /// - Returns: Returns the next available Float or `0` if not available.
     public func float() -> Float {
         let text = string()
         
@@ -200,6 +202,13 @@ open class Deserializer {
         } else {
             return 0
         }
+    }
+    
+    /// Get the next available CGFloat.
+    /// - Returns: Returns the next available CGFloat or `0` if not available.
+    public func cgFloat() -> CGFloat {
+        
+        return CGFloat(float())
     }
     
     /// Get the Float at the given index.
@@ -213,6 +222,14 @@ open class Deserializer {
         } else {
             return 0
         }
+    }
+    
+    /// Get the CGFloat at the given index.
+    /// - Parameter index: The index to get the CGFloat from.
+    /// - Returns: Returns the next requested CGFloat or `0` if not available.
+    public func cgFloat(at index:Int) -> CGFloat {
+        
+        return CGFloat(float(at: index))
     }
     
     /// Gets the next avaiable child object conforming to `SimpleSerializeable`.
