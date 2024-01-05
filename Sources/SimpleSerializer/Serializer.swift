@@ -420,4 +420,34 @@ open class Serializer {
     @discardableResult public func append<T, X>(array:[T?], divider:StringRepresentable<X>) -> Serializer {
         return append(array: array, divider: divider.rawValue)
     }
+    
+    /// Appends the string dictionary to the serialized list.
+    /// - Parameters:
+    ///   - dictionary: The dictionary to serialize.
+    ///   - keyDivider: The key divider.
+    ///   - itemDivider: The item divider.
+    /// - Returns: Returns self.
+    @discardableResult public func append(dictionary:[String:String], keyDivider:String = "|", itemDivider:String = ",") -> Serializer {
+        
+        let itemSerializer = Serializer(divider: itemDivider)
+        for key in dictionary.keys {
+            if let item = dictionary[key] {
+                let keySerializer = Serializer(divider: keyDivider)
+                    .append(key)
+                    .append(item, isBase64Encoded: true)
+                
+                itemSerializer.append(keySerializer.value)
+            }
+        }
+        
+        let text = itemSerializer.value
+        
+        if value == "" {
+            value = text
+        } else {
+            value += "\(self.divider)\(text)"
+        }
+        
+        return self
+    }
 }

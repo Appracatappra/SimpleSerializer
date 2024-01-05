@@ -69,4 +69,22 @@ final class SimpleSerializerTests: XCTestCase {
         
         XCTAssert(words[1] == nil)
     }
+    
+    func testDictionaries() throws {
+        var state:[String:String] = [:]
+        
+        state["1"] = "One"
+        state["2"] = "Two"
+        state["3"] = "Three"
+        
+        let serializer = SimpleSerializer.Serializer(divider: ":")
+            .append(dictionary: state)
+        
+        let value = serializer.value
+        
+        let deserializer = SimpleSerializer.Deserializer(text: value, divider: ":")
+        let newState:[String:String] = deserializer.dictionary()
+        
+        XCTAssert(newState["2"] == "Two")
+    }
 }

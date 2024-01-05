@@ -522,4 +522,32 @@ open class Deserializer {
     public func nilArray<T, X>(at index:Int = -1, divider:StringRepresentable<X>) -> [T?] {
         return nilArray(at: index, divider: divider.rawValue)
     }
+    
+    /// Decodes a string dictionary.
+    /// - Parameters:
+    ///   - index: The index of the dictionary to decode.
+    ///   - keyDivider: The key divider.
+    ///   - itemDivider: The item divider.
+    /// - Returns: Returns the requested dictionary.
+    public func dictionary(at index:Int = -1, keyDivider:String = "|", itemDivider:String = ",") -> [String:String] {
+        var dictionary:[String:String] = [:]
+        var text = ""
+        
+        if index < 0 {
+            text = string()
+        } else {
+            text = string(at: index)
+        }
+        
+        let itemDeserializer = Deserializer(text: text, divider: itemDivider)
+        for _ in 0..<itemDeserializer.items {
+            let entry = itemDeserializer.string()
+            let keyDeserializer = Deserializer(text: entry, divider: keyDivider)
+            let key = keyDeserializer.string()
+            let value = keyDeserializer.string(isBase64Encoded: true)
+            dictionary[key] = value
+        }
+        
+        return dictionary
+    }
 }
