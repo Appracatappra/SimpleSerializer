@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.1
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -24,7 +24,11 @@ let package = Package(
         .target(
             name: "SimpleSerializer",
             dependencies: ["LogManager", "SwiftletUtilities"],
-            resources: [.process("Resources")]),
+            resources: [.process("Resources")],
+            swiftSettings: [
+                .swiftLanguageMode(.v6)
+            ]
+        ),
         .testTarget(
             name: "SimpleSerializerTests",
             dependencies: ["SimpleSerializer"]),
