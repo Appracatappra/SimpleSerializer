@@ -42,12 +42,18 @@ open class Serializer {
     /// Appends the given string value to the serialized list.
     /// - Parameter item: The item to append.
     /// - Parameter isBase64Encoded: if `true`, encode the string to base64 before storing it.
+    /// - Parameter isObfuscated: If `true`, obfuscate the string before storing it.
     /// - Returns: Returns self.
-    @discardableResult public func append(_ item:String, isBase64Encoded:Bool = false) -> Serializer {
+    /// - Remark: **WARNING:** This is NOT a cryptographically secure process! It's only meant to hide specific values against casual "prying-eyes".
+    @discardableResult public func append(_ item:String, isBase64Encoded:Bool = false, isObfuscated:Bool = false) -> Serializer {
         var text = (item == "") ? "<e>" : item
         
         if isBase64Encoded {
             text = text.base64Encoded()
+        }
+        
+        if isObfuscated {
+            text = ObfuscationProvider.obfuscate(text)
         }
         
         if value == "" {

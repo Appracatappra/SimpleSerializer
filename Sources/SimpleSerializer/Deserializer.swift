@@ -87,13 +87,19 @@ open class Deserializer {
     /// Gets the next available string.
     /// - Returns: Returns the next available string or "" if not available.
     /// - Parameter isBase64Encoded: if `true` decode the string from Base 64.
-    public func string(isBase64Encoded:Bool = false) -> String {
+    /// - Parameter isObfuscated: isObfuscated: If `true`, obfuscate the string before storing it.
+    /// - Remark: **WARNING:** This is NOT a cryptographically secure process! It's only meant to hide specific values against casual "prying-eyes".
+    public func string(isBase64Encoded:Bool = false, isObfuscated:Bool = false) -> String {
         guard index < parts.count else {
             return ""
         }
         
         var text = String(parts[index])
         moveNext()
+        
+        if isObfuscated {
+            text = ObfuscationProvider.deobfuscate(text)
+        }
         
         if isBase64Encoded {
             text = text.base64Decoded()
@@ -109,13 +115,19 @@ open class Deserializer {
     /// Gets the string at the given index.
     /// - Parameter index: The index to get the string at.
     /// - Parameter isBase64Encoded: if `true` decode the string from Base 64.
+    /// - Parameter isObfuscated: isObfuscated: If `true`, obfuscate the string before storing it.
+    /// - Remark: **WARNING:** This is NOT a cryptographically secure process! It's only meant to hide specific values against casual "prying-eyes".
     /// - Returns: Returns the next requested string or "" if not available.
-    public func string(at index:Int, isBase64Encoded:Bool = false) -> String {
+    public func string(at index:Int, isBase64Encoded:Bool = false, isObfuscated:Bool = false) -> String {
         guard index >= 0 && index < parts.count else {
             return ""
         }
         
         var text = String(parts[index])
+        
+        if isObfuscated {
+            text = ObfuscationProvider.deobfuscate(text)
+        }
         
         if isBase64Encoded {
             text = text.base64Decoded()
@@ -382,6 +394,30 @@ open class Deserializer {
     /// - Returns: Returns requested array of child objects.
     public func children<T:SimpleSerializeable, X>(at index:Int = -1, divider:StringRepresentable<X>) -> [T?] {
         return children(at: index, divider: divider.rawValue)
+    }
+    
+    public func stringEnum<T:SimpleSerializeableEnum>(at index:Int = -1) -> T {
+        var text = ""
+        
+        if index < 0 {
+            text = string()
+        } else {
+            text = string(at: index)
+        }
+        
+        return T(from: text)
+    }
+    
+    public func intEnum<T:SimpleSerializeableEnum>(at index:Int = -1) -> T {
+        var value = 0
+        
+        if index < 0 {
+            value = int()
+        } else {
+            value = int(at: index)
+        }
+        
+        return T(from: value)
     }
     
     /// Decode an array of generic items.

@@ -2,11 +2,118 @@ import XCTest
 @testable import SimpleSerializer
 
 final class SimpleSerializerTests: XCTestCase {
+    
+    enum TestValues: String, SimpleSerializeableEnum {
+        case one = "1"
+        case two = "2"
+        case three = "3"
+    }
+    
+    enum TestInts: Int, SimpleSerializeableEnum {
+        case one = 1
+        case two = 2
+        case three = 3
+    }
+    
+    class ChildClass: SimpleSerializeable {
+        var one: String = ""
+        var two: String = ""
+        
+        var serialized: String {
+            let serializer = SimpleSerializer.Serializer(divider: ":")
+                .append(one)
+                .append(two)
+            return serializer.value
+        }
+        
+        init(one:String, two:String) {
+            self.one = one
+            self.two = two
+        }
+        
+        required init(from value: String) {
+            let deserializer = SimpleSerializer.Deserializer(text: value, divider: ":")
+            self.one = deserializer.string()
+            self.two = deserializer.string()
+        }
+    }
+    
+    class ParentClass: SimpleSerializeable {
+        var firstChild: ChildClass = ChildClass(one: "", two: "")
+        var secondChild: ChildClass = ChildClass(one: "", two: "")
+        
+        var serialized: String {
+            let serializer = SimpleSerializer.Serializer(divider: ",")
+                .append(firstChild)
+                .append(secondChild)
+            return serializer.value
+        }
+        
+        init(firstChild:ChildClass, secondChild:ChildClass) {
+            self.firstChild = firstChild
+            self.secondChild = secondChild
+        }
+        
+        required init(from value: String) {
+            let deserializer = SimpleSerializer.Deserializer(text: value, divider: ",")
+            self.firstChild = deserializer.child()
+            self.secondChild = deserializer.child()
+        }
+    }
+    
     func testSerializer() throws {
         let serializer = SimpleSerializer.Serializer(divider: ",")
             .append("one")
             .append("two")
         XCTAssert(serializer.value == "one,two")
+    }
+    
+    func testObfuscation() throws {
+        let secret = "A hidden message"
+        
+        let serializer = SimpleSerializer.Serializer(divider: ",")
+            .append(secret, isObfuscated: true)
+        
+        let value = serializer.value
+        let deserializer = SimpleSerializer.Deserializer(text: value, divider: ",")
+        let hidden = deserializer.string(isObfuscated: true)
+        
+        XCTAssert(secret == hidden)
+    }
+    
+    func testStringEnum() throws {
+        var test:TestValues = .two
+        
+        let serializer = SimpleSerializer.Serializer(divider: ",")
+            .append(test)
+        
+        let value = serializer.value
+        let deserializer = SimpleSerializer.Deserializer(text: value, divider: ",")
+        test = deserializer.stringEnum()
+        
+        XCTAssert(test == .two)
+    }
+    
+    func testChildClass() throws {
+        let parent:ParentClass = ParentClass(firstChild: ChildClass(one: "1", two: "2"), secondChild: ChildClass(one: "3", two: "4"))
+        
+        let value = parent.serialized
+        let newParent = ParentClass(from: value)
+        
+        XCTAssert(newParent.secondChild.two == "4")
+    }
+    
+    func testIntEnum() throws {
+        var test:TestInts = .two
+        
+        let serializer = SimpleSerializer.Serializer(divider: ",")
+            .append(test)
+        
+        let value = serializer.value
+        let deserializer = SimpleSerializer.Deserializer(text: value, divider: ",")
+        test = deserializer.intEnum()
+        
+        XCTAssert(test == .two)
     }
     
     func testGenerics() throws {
