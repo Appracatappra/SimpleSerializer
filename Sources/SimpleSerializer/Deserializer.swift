@@ -66,6 +66,15 @@ open class Deserializer {
     }
     
     // MARK: - Functions
+    /// Decodes any New Line and Carriage Return characters read from a serialized text file.
+    /// - Parameter text: The text to decode.
+    /// - Returns: Returns the text with any New Line and Carriage Return characters decoded.
+    public func decodeNewline(_ text:String) -> String {
+        var value = text.replacingOccurrences(of: "<\n>", with: "\n")
+        value = value.replacingOccurrences(of: "<\r>", with: "\r")
+        return value
+    }
+    
     /// Moves to the next item that was deserialized.
     public func moveNext() {
         if index <= parts.count {
@@ -88,8 +97,9 @@ open class Deserializer {
     /// - Returns: Returns the next available string or "" if not available.
     /// - Parameter isBase64Encoded: if `true` decode the string from Base 64.
     /// - Parameter isObfuscated: isObfuscated: If `true`, obfuscate the string before storing it.
+    /// - Parameter decodeLinefeeds: If `true` decode any New Line and Carriage Return characters.
     /// - Remark: **WARNING:** This is NOT a cryptographically secure process! It's only meant to hide specific values against casual "prying-eyes".
-    public func string(isBase64Encoded:Bool = false, isObfuscated:Bool = false) -> String {
+    public func string(isBase64Encoded:Bool = false, isObfuscated:Bool = false, decodeLinefeeds:Bool = false) -> String {
         guard index < parts.count else {
             return ""
         }
@@ -105,6 +115,10 @@ open class Deserializer {
             text = text.base64Decoded()
         }
         
+        if decodeLinefeeds {
+            text = decodeNewline(text)
+        }
+        
         if text == "<e>" {
             return ""
         } else {
@@ -116,9 +130,10 @@ open class Deserializer {
     /// - Parameter index: The index to get the string at.
     /// - Parameter isBase64Encoded: if `true` decode the string from Base 64.
     /// - Parameter isObfuscated: isObfuscated: If `true`, obfuscate the string before storing it.
+    /// - Parameter decodeLinefeeds: If `true` decode any New Line and Carriage Return characters.
     /// - Remark: **WARNING:** This is NOT a cryptographically secure process! It's only meant to hide specific values against casual "prying-eyes".
     /// - Returns: Returns the next requested string or "" if not available.
-    public func string(at index:Int, isBase64Encoded:Bool = false, isObfuscated:Bool = false) -> String {
+    public func string(at index:Int, isBase64Encoded:Bool = false, isObfuscated:Bool = false, decodeLinefeeds:Bool = false) -> String {
         guard index >= 0 && index < parts.count else {
             return ""
         }
@@ -131,6 +146,10 @@ open class Deserializer {
         
         if isBase64Encoded {
             text = text.base64Decoded()
+        }
+        
+        if decodeLinefeeds {
+            text = decodeNewline(text)
         }
         
         if text == "<e>" {

@@ -1,5 +1,5 @@
 {
-  "originHash" : "3fb7998c8f393d05815d500824cc55e6e361edc82957b4f076b7703ff68325f9",
+  "originHash" : "0e3e811752e5973ae3b1ad7d3246b5c89826ac4e8b693113134cc8806d45ed99",
   "pins" : [
     {
       "identity" : "logmanager",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Appracatappra/SwiftletUtilities",
       "state" : {
-        "revision" : "2903319b5a082b649a0f608f5c30fa3f78c42cc8",
-        "version" : "2.0.4"
+        "revision" : "27095cbeb844a50cec83764ca627418745fc5a6f",
+        "version" : "2.0.6"
       }
     }
   ],

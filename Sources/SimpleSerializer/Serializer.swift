@@ -39,14 +39,28 @@ open class Serializer {
     }
     
     // MARK: - Functions
+    /// Encodes any New Line and Carriage Return characters so they can be stored in a text file.
+    /// - Parameter text: The text to encode.
+    /// - Returns: Returns the text with any New Line and Carriage Return characters encoded.
+    public func encodeNewline(_ text:String) -> String {
+        var value = text.replacingOccurrences(of: "\n", with: "<\n>")
+        value = value.replacingOccurrences(of: "\r", with: "<\r>")
+        return value
+    }
+    
     /// Appends the given string value to the serialized list.
     /// - Parameter item: The item to append.
     /// - Parameter isBase64Encoded: if `true`, encode the string to base64 before storing it.
     /// - Parameter isObfuscated: If `true`, obfuscate the string before storing it.
+    /// - Parameter encodeLinefeeds: If `true`, encode any New Line and Carriage Return characters.
     /// - Returns: Returns self.
     /// - Remark: **WARNING:** This is NOT a cryptographically secure process! It's only meant to hide specific values against casual "prying-eyes".
-    @discardableResult public func append(_ item:String, isBase64Encoded:Bool = false, isObfuscated:Bool = false) -> Serializer {
+    @discardableResult public func append(_ item:String, isBase64Encoded:Bool = false, isObfuscated:Bool = false, encodeLinefeeds:Bool = false) -> Serializer {
         var text = (item == "") ? "<e>" : item
+        
+        if encodeLinefeeds {
+            text = encodeNewline(text)
+        }
         
         if isBase64Encoded {
             text = text.base64Encoded()
