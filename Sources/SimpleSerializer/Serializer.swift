@@ -43,8 +43,8 @@ open class Serializer {
     /// - Parameter text: The text to encode.
     /// - Returns: Returns the text with any New Line and Carriage Return characters encoded.
     public func encodeNewline(_ text:String) -> String {
-        var value = text.replacingOccurrences(of: "\n", with: "<\n>")
-        value = value.replacingOccurrences(of: "\r", with: "<\r>")
+        var value = text.replacingOccurrences(of: "\n", with: "</n>")
+        value = value.replacingOccurrences(of: "\r", with: "</r>")
         return value
     }
     

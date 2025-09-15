@@ -70,8 +70,8 @@ open class Deserializer {
     /// - Parameter text: The text to decode.
     /// - Returns: Returns the text with any New Line and Carriage Return characters decoded.
     public func decodeNewline(_ text:String) -> String {
-        var value = text.replacingOccurrences(of: "<\n>", with: "\n")
-        value = value.replacingOccurrences(of: "<\r>", with: "\r")
+        var value = text.replacingOccurrences(of: "</n>", with: "\n")
+        value = value.replacingOccurrences(of: "</r>", with: "\r")
         return value
     }
     
