@@ -1,13 +1,13 @@
 {
-  "originHash" : "0e3e811752e5973ae3b1ad7d3246b5c89826ac4e8b693113134cc8806d45ed99",
+  "originHash" : "9e996c8ddfaa68b04021ee30e242624a1855162bb984d614555f15d9cd3d13ea",
   "pins" : [
     {
       "identity" : "logmanager",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Appracatappra/LogManager",
       "state" : {
-        "revision" : "ed7b6f091d9f261e75211c214a4ba0ea3ba7a84d",
-        "version" : "2.0.4"
+        "revision" : "0dc18ac85ccdbb979152a1e4f64bfc6f377513b1",
+        "version" : "2.1.0"
       }
     },
     {
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Appracatappra/SwiftletUtilities",
       "state" : {
-        "revision" : "27095cbeb844a50cec83764ca627418745fc5a6f",
-        "version" : "2.0.6"
+        "revision" : "9ef9333b19433eb9a6d344a1ed0c1c00fb232e5a",
+        "version" : "2.1.3"
       }
     }
   ],
